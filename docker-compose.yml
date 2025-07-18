@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./deps-dev-backend
+    ports:
+      - "${BACKEND_PORT}:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PORT=${BACKEND_PORT}
+      - SQLITE_PATH=/app/data/app.db
+      - WITH_INITIAL_DATA_REFRESH=${WITH_INITIAL_DATA_REFRESH}
+      - WITH_DAILY_DATA_REFRESH=${WITH_DAILY_DATA_REFRESH}
+
+  frontend:
+    build:
+      context: ./deps-dev-frontend
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    environment:
+      - VITE_API_URL=${API_BASE_URL}
+    volumes:
+      - ./deps-dev-frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
